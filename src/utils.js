@@ -1,35 +1,39 @@
-import moment from 'moment';
+import moment from "moment";
 
-const DEPRECATION_MESSAGE = 'isSameUser and isSameDay should be imported from the utils module instead of using the props functions';
+const DEPRECATION_MESSAGE =
+    "isSameUser and isSameDay should be imported from the utils module instead of using the props functions";
 
 export function isSameDay(currentMessage = {}, diffMessage = {}) {
+    if (!diffMessage.createdAt) {
+        return false;
+    }
 
-  if (!diffMessage.createdAt) {
-    return false
-  }
+    let currentCreatedAt = moment(currentMessage.createdAt);
+    let diffCreatedAt = moment(diffMessage.createdAt);
 
-  let currentCreatedAt = moment(currentMessage.createdAt);
-  let diffCreatedAt = moment(diffMessage.createdAt);
+    if (!currentCreatedAt.isValid() || !diffCreatedAt.isValid()) {
+        return false;
+    }
 
-  if (!currentCreatedAt.isValid() || !diffCreatedAt.isValid()) {
-    return false;
-  }
-
-  return currentCreatedAt.isSame(diffCreatedAt, 'day');
-
+    return currentCreatedAt.isSame(diffCreatedAt, "day");
 }
 
 export function isSameUser(currentMessage = {}, diffMessage = {}) {
-
-  return !!(diffMessage.user && currentMessage.user && diffMessage.user._id === currentMessage.user._id);
-
+    return !!(diffMessage.user && currentMessage.user && diffMessage.user._id === currentMessage.user._id);
 }
 
 export function warnDeprecated(fn) {
-
-  return (...args) => {
-    console.warn(DEPRECATION_MESSAGE);
-    return fn(...args);
-  };
-
+    return (...args) => {
+        console.warn(DEPRECATION_MESSAGE);
+        return fn(...args);
+    };
 }
+
+export const MessageStatus = {
+    unknown: 0,
+    sending: 1,
+    sent: 2,
+    received: 3,
+    read: 4,
+    failed: 5
+};
