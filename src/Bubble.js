@@ -10,6 +10,7 @@ import { isSameUser, isSameDay, warnDeprecated, MessageStatus } from "./utils";
 export default class Bubble extends React.Component {
     constructor(props) {
         super(props);
+        this.onPress = this.onPress.bind(this);
         this.onLongPress = this.onLongPress.bind(this);
     }
 
@@ -124,6 +125,12 @@ export default class Bubble extends React.Component {
         return null;
     }
 
+    onPress() {
+        if (this.props.onPress) {
+            this.props.onPress(this.context, this.props.currentMessage);
+        }
+    }
+
     onLongPress() {
         if (this.props.onLongPress) {
             this.props.onLongPress(this.context, this.props.currentMessage);
@@ -157,6 +164,7 @@ export default class Bubble extends React.Component {
                     ]}
                 >
                     <TouchableWithoutFeedback
+                        onPress={this.onPress}
                         onLongPress={this.onLongPress}
                         accessibilityTraits="text"
                         {...this.props.touchableProps}
@@ -265,6 +273,7 @@ Bubble.contextTypes = {
 
 Bubble.defaultProps = {
     touchableProps: {},
+    onPress: null,
     onLongPress: null,
     renderMessageImage: null,
     renderMessageText: null,
@@ -291,6 +300,7 @@ Bubble.defaultProps = {
 
 Bubble.propTypes = {
     touchableProps: React.PropTypes.object,
+    onPress: React.PropTypes.func,
     onLongPress: React.PropTypes.func,
     renderMessageImage: React.PropTypes.func,
     renderMessageText: React.PropTypes.func,
