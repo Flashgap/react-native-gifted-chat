@@ -127,7 +127,7 @@ export default class Bubble extends React.Component {
 
     onPress() {
         if (this.props.onPress) {
-            this.props.onPress(this.context, this.props.currentMessage);
+            this.props.onPress(this.props.currentMessage);
         }
     }
 
