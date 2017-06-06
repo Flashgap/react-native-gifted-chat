@@ -68,7 +68,11 @@ export default class Bubble extends React.Component {
             return this.props.renderTicks(currentMessage);
         }
 
-        if (currentMessage.user._id !== this.props.user._id || currentMessage.status === MessageStatus.unknown) {
+        if (
+            !currentMessage.user ||
+            currentMessage.user._id !== this.props.user._id ||
+            currentMessage.status === MessageStatus.unknown
+        ) {
             return;
         }
 
@@ -108,7 +112,7 @@ export default class Bubble extends React.Component {
     }
 
     renderTime() {
-        if (this.props.currentMessage.createdAt) {
+        if (this.props.position != "center" && this.props.currentMessage.createdAt) {
             const { containerStyle, wrapperStyle, ...timeProps } = this.props;
             if (this.props.renderTime) {
                 return this.props.renderTime(timeProps);
@@ -127,7 +131,7 @@ export default class Bubble extends React.Component {
 
     onPress() {
         if (this.props.onPress) {
-            this.props.onPress(this.props.currentMessage);
+            this.props.onPress(this.context, this.props.currentMessage);
         }
     }
 
@@ -224,6 +228,17 @@ const styles = {
             borderTopRightRadius: 3
         }
     }),
+    center: StyleSheet.create({
+        container: {
+            flex: 1,
+            alignItems: "center"
+        },
+        wrapper: {
+            backgroundColor: "transparent",
+            minHeight: 20,
+            justifyContent: "flex-end"
+        }
+    }),
     bottom: {
         flexDirection: "row",
         justifyContent: "flex-end"
@@ -306,7 +321,7 @@ Bubble.propTypes = {
     renderMessageText: React.PropTypes.func,
     renderCustomView: React.PropTypes.func,
     renderTime: React.PropTypes.func,
-    position: React.PropTypes.oneOf(["left", "right"]),
+    position: React.PropTypes.oneOf(["left", "right", "center"]),
     currentMessage: React.PropTypes.object,
     nextMessage: React.PropTypes.object,
     previousMessage: React.PropTypes.object,

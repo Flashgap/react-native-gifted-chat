@@ -42,5 +42,11 @@ module.exports = [
             name: "React Native"
         },
         status: 1
+    },
+    {
+        _id: Math.round(Math.random() * 1000000),
+        text: "Hello world 🌎",
+        createdAt: new Date(Date.UTC(2016, 7, 30, 17, 20, 0)),
+        status: 1
     }
 ];
