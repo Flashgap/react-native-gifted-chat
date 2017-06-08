@@ -1,9 +1,10 @@
 import React from "react";
-import { ActivityIndicator, Platform, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Platform, StyleSheet, Text, View, TouchableOpacity } from "react-native";
 
-import { GiftedChat, Actions, Bubble } from "react-native-gifted-chat";
+import { GiftedChat, Actions, Bubble, InputToolbar } from "react-native-gifted-chat";
 import CustomActions from "./CustomActions";
 import CustomView from "./CustomView";
+import GifInputToolbar from "./GifInputToolbar";
 
 export default class Example extends React.Component {
     constructor(props) {
@@ -12,17 +13,20 @@ export default class Example extends React.Component {
             messages: [],
             loadEarlier: true,
             typingText: null,
-            isLoadingEarlier: false
+            isLoadingEarlier: false,
+            gif: false
         };
 
         this._isMounted = false;
         this.onSend = this.onSend.bind(this);
         this.onReceive = this.onReceive.bind(this);
+        this.onPress = this.onPress.bind(this);
         this.renderCustomActions = this.renderCustomActions.bind(this);
         this.renderBubble = this.renderBubble.bind(this);
         this.renderTicks = this.renderTicks.bind(this);
         this.renderFooter = this.renderFooter.bind(this);
         this.onLoadEarlier = this.onLoadEarlier.bind(this);
+        this.renderInputToolbar = this.renderInputToolbar.bind(this);
 
         this._isAlright = null;
     }
@@ -123,7 +127,20 @@ export default class Example extends React.Component {
         });
     }
 
+    onPress() {
+        this.chat.setMinInputToolbarHeight(this.state.gif ? 44 : 150);
+        this.state.gif = !this.state.gif;
+        // this.setState({ gif: !this.state.gif });
+    }
+
     renderCustomActions(props) {
+        return (
+            <TouchableOpacity style={{ width: 30, height: 30 }} onPress={this.onPress}>
+                <Text>
+                    +
+                </Text>
+            </TouchableOpacity>
+        );
         if (Platform.OS === "ios") {
             return <CustomActions {...props} />;
         }
@@ -167,26 +184,34 @@ export default class Example extends React.Component {
     }
 
     renderFooter(props) {
-        if (this.state.typingText) {
-            return (
-                <View style={styles.footerContainer}>
-                    <Text style={styles.footerText}>
-                        {this.state.typingText}
-                    </Text>
-                </View>
-            );
+        return (
+            <View style={styles.footerContainer}>
+                <Text style={styles.footerText}>
+                    Banga!!!
+                </Text>
+            </View>
+        );
+    }
+
+    renderInputToolbar(inputToolbarProps) {
+        if (this.state.gif) {
+            return <GifInputToolbar {...inputToolbarProps} />;
         }
-        return null;
+        return <InputToolbar {...inputToolbarProps} />;
     }
 
     render() {
         return (
             <GiftedChat
+                ref={ref => {
+                    this.chat = ref;
+                }}
                 messages={this.state.messages}
                 onSend={this.onSend}
                 loadEarlier={this.state.loadEarlier}
                 onLoadEarlier={this.onLoadEarlier}
                 isLoadingEarlier={this.state.isLoadingEarlier}
+                onPress={this.onPress}
                 user={{
                     _id: 1 // sent messages should have same user._id
                 }}
@@ -194,6 +219,8 @@ export default class Example extends React.Component {
                 renderBubble={this.renderBubble}
                 renderCustomView={this.renderCustomView}
                 renderFooter={this.renderFooter}
+                renderInputToolbar={this.renderInputToolbar}
+                textInputProps={{ autoFocus: true }}
             />
         );
     }
