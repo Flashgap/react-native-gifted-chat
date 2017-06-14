@@ -154,7 +154,7 @@ class GiftedChat extends React.Component {
             // For android: on-screen keyboard resized main container and has own height.
             // @see https://developer.android.com/training/keyboard-input/visibility.html
             // So for calculate the messages container height ignore keyboard height.
-            return 0;
+            return this._keyboardHeight;
         } else {
             return this._keyboardHeight;
         }
@@ -303,7 +303,7 @@ class GiftedChat extends React.Component {
                     {...this.props}
                     invertibleScrollViewProps={this.invertibleScrollViewProps}
                     messages={this.getMessages()}
-                    ref={component => this._messageContainerRef = component}
+                    ref={component => (this._messageContainerRef = component)}
                 />
                 {this.renderChatFooter()}
             </AnimatedView>
@@ -415,7 +415,7 @@ class GiftedChat extends React.Component {
             onTextChanged: this.onInputTextChanged,
             textInputProps: {
                 ...this.props.textInputProps,
-                ref: textInput => this.textInput = textInput,
+                ref: textInput => (this.textInput = textInput),
                 maxLength: this.getIsTypingDisabled() ? 0 : this.props.maxInputLength
             }
         };
@@ -448,7 +448,7 @@ class GiftedChat extends React.Component {
     render() {
         if (this.state.isInitialized === true) {
             return (
-                <ActionSheet ref={component => this._actionSheetRef = component}>
+                <ActionSheet ref={component => (this._actionSheetRef = component)}>
                     <View style={styles.container} onLayout={this.onMainViewLayout}>
                         {this.renderMessages()}
                         {this.renderInputToolbar()}
