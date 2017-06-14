@@ -1,66 +1,55 @@
-import React from 'react';
-import { StyleSheet, View, ListView, Text, Image } from 'react-native';
+import React from "react";
+import { StyleSheet, View, Text, Image } from "react-native";
 
-import { Composer } from 'react-native-gifted-chat';
+import { Composer } from "react-native-gifted-chat";
+import GifScroller from "./GifScroller";
 
 export default class GifInputToolbar extends React.Component {
-  constructor() {
-    super();
-    const ds = new ListView.DataSource({ rowHasChanged: (r1, r2) => r1 !== r2 });
-    this.state = {
-      dataSource: ds.cloneWithRows([
-        'https://ressources.blogdumoderateur.com/2013/02/gif-anime.gif',
-        'https://ressources.blogdumoderateur.com/2013/02/gif-anime.gif',
-        'https://ressources.blogdumoderateur.com/2013/02/gif-anime.gif',
-        'https://ressources.blogdumoderateur.com/2013/02/gif-anime.gif',
-        'https://ressources.blogdumoderateur.com/2013/02/gif-anime.gif',
-        'https://ressources.blogdumoderateur.com/2013/02/gif-anime.gif',
-        'https://ressources.blogdumoderateur.com/2013/02/gif-anime.gif',
-        'https://ressources.blogdumoderateur.com/2013/02/gif-anime.gif',
-        'https://ressources.blogdumoderateur.com/2013/02/gif-anime.gif',
-        'https://ressources.blogdumoderateur.com/2013/02/gif-anime.gif',
-        'https://ressources.blogdumoderateur.com/2013/02/gif-anime.gif',
-      ]),
-    };
-  }
+    constructor() {
+        super();
 
-  renderActions() {
-    if (this.props.renderActions) {
-      return this.props.renderActions(this.props);
-    } else if (this.props.onPressActionButton) {
-      return <Actions {...this.props} />;
+        this.handleGifSelect = this.handleGifSelect.bind(this);
     }
-    return null;
-  }
 
-  renderComposer() {
-    return <Composer {...this.props} multiline={false} />;
-  }
+    handleGifSelect(gif) {
+        this.props.onSend({ image: gif }, true);
+    }
 
-  render() {
-    return (
-      <View style={styles.container}>
+    renderActions() {
+        if (this.props.renderActions) {
+            return this.props.renderActions(this.props);
+        } else if (this.props.onPressActionButton) {
+            return <Actions {...this.props} />;
+        }
+        return null;
+    }
 
-        <View style={{ height: 100, backgroundColor: 'transparent' }} />
-        <View style={styles.primary}>
-          {this.renderActions()}
-          {this.renderComposer()}
-        </View>
-      </View>
-    );
-  }
+    renderComposer() {
+        return <Composer {...this.props} multiline={false} placeholder={"Rechecher des GIFs..."} />;
+    }
+
+    render() {
+        return (
+            <View style={styles.container}>
+                <GifScroller inputText={this.props.text} handleGifSelect={this.handleGifSelect} />
+                <View style={styles.primary}>
+                    {this.renderActions()}
+                    {this.renderComposer()}
+                </View>
+            </View>
+        );
+    }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    borderTopWidth: StyleSheet.hairlineWidth,
-    borderTopColor: '#b2b2b2',
-    backgroundColor: '#FFFFFF',
-  },
-  primary: {
-    flexDirection: 'row',
-    alignItems: 'flex-end',
-  },
+    container: {
+        borderTopColor: "#b2b2b2",
+        backgroundColor: "#FFFFFF"
+    },
+    primary: {
+        flexDirection: "row",
+        alignItems: "flex-end"
+    }
 });
 
 GifInputToolbar.defaultProps = {};

@@ -1,10 +1,11 @@
 import React from "react";
-import { ActivityIndicator, Platform, StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { ActivityIndicator, Platform, StyleSheet, Text, View, TouchableOpacity, Image } from "react-native";
 
-import { GiftedChat, Actions, Bubble, InputToolbar } from "react-native-gifted-chat";
+import { GiftedChat, Actions, Bubble, InputToolbar, MessageImage } from "react-native-gifted-chat";
 import CustomActions from "./CustomActions";
 import CustomView from "./CustomView";
 import GifInputToolbar from "./GifInputToolbar";
+import MessageGif from "./MessageGif";
 
 export default class Example extends React.Component {
     constructor(props) {
@@ -20,7 +21,7 @@ export default class Example extends React.Component {
         this._isMounted = false;
         this.onSend = this.onSend.bind(this);
         this.onReceive = this.onReceive.bind(this);
-        this.onPress = this.onPress.bind(this);
+        this.onActionsPress = this.onActionsPress.bind(this);
         this.renderCustomActions = this.renderCustomActions.bind(this);
         this.renderBubble = this.renderBubble.bind(this);
         this.renderTicks = this.renderTicks.bind(this);
@@ -93,11 +94,9 @@ export default class Example extends React.Component {
                         this.onReceive("Nice picture!");
                     } else if (messages[0].location) {
                         this.onReceive("My favorite place");
-                    } else {
-                        if (!this._isAlright) {
-                            this._isAlright = true;
-                            this.onReceive("Alright");
-                        }
+                    } else if (!this._isAlright) {
+                        this._isAlright = true;
+                        this.onReceive("Alright");
                     }
                 }
             }
@@ -115,7 +114,7 @@ export default class Example extends React.Component {
             return {
                 messages: GiftedChat.append(previousState.messages, {
                     _id: Math.round(Math.random() * 1000000),
-                    text: text,
+                    text,
                     createdAt: new Date(),
                     user: {
                         _id: 2,
@@ -127,33 +126,22 @@ export default class Example extends React.Component {
         });
     }
 
-    onPress() {
-        this.chat.setMinInputToolbarHeight(this.state.gif ? 44 : 150);
+    onActionsPress() {
+        this.chat.setMinInputToolbarHeight(this.state.gif ? 44 : 144);
         this.state.gif = !this.state.gif;
-        // this.setState({ gif: !this.state.gif });
     }
 
     renderCustomActions(props) {
-        return (
-            <TouchableOpacity style={{ width: 30, height: 30 }} onPress={this.onPress}>
-                <Text>
-                    +
-                </Text>
-            </TouchableOpacity>
-        );
-        if (Platform.OS === "ios") {
-            return <CustomActions {...props} />;
+        return <CustomActions {...props} onActionsPress={this.onActionsPress} isSearch={this.state.gif} />;
+    }
+
+    renderMessageImage(props) {
+        const image = props.currentMessage.image;
+        if (typeof image === "string" || image instanceof String) {
+            return <MessageImage {...props} />;
         }
-        const options = {
-            "Action 1": props => {
-                alert("option 1");
-            },
-            "Action 2": props => {
-                alert("option 2");
-            },
-            Cancel: () => {}
-        };
-        return <Actions {...props} options={options} />;
+
+        return <MessageGif {...props} />;
     }
 
     renderBubble(props) {
@@ -211,7 +199,6 @@ export default class Example extends React.Component {
                 loadEarlier={this.state.loadEarlier}
                 onLoadEarlier={this.onLoadEarlier}
                 isLoadingEarlier={this.state.isLoadingEarlier}
-                onPress={this.onPress}
                 user={{
                     _id: 1 // sent messages should have same user._id
                 }}
@@ -220,6 +207,7 @@ export default class Example extends React.Component {
                 renderCustomView={this.renderCustomView}
                 renderFooter={this.renderFooter}
                 renderInputToolbar={this.renderInputToolbar}
+                renderMessageImage={this.renderMessageImage}
                 textInputProps={{ autoFocus: true }}
             />
         );
