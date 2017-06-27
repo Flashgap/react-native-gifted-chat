@@ -3,8 +3,9 @@ import React from "react";
 import { ListView, View } from "react-native";
 
 import shallowequal from "shallowequal";
-import InvertibleScrollView from "react-native-invertible-scroll-view";
 import md5 from "md5";
+
+import InvertibleScrollView from "./InvertibleScrollView";
 import LoadEarlier from "./LoadEarlier";
 import Message from "./Message";
 
@@ -106,7 +107,7 @@ export default class MessageContainer extends React.Component {
             currentMessage: message,
             previousMessage: message.previousMessage,
             nextMessage: message.nextMessage,
-            position: message.user ? message.user._id === this.props.user._id ? "right" : "left" : "center"
+            position: message.user ? (message.user._id === this.props.user._id ? "right" : "left") : "center"
         };
 
         if (this.props.renderMessage) {
@@ -121,7 +122,7 @@ export default class MessageContainer extends React.Component {
             <InvertibleScrollView
                 {...props}
                 {...invertibleScrollViewProps}
-                ref={component => this._invertibleScrollViewRef = component}
+                ref={component => (this._invertibleScrollViewRef = component)}
             />
         );
     }
