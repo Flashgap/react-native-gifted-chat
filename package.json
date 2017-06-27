@@ -44,6 +44,8 @@
     "react-native-communications": "2.2.1",
     "react-native-lightbox": "oblador/react-native-lightbox#c84a8543d4511fe6a44c3d7820747c9c1bddd875",
     "react-native-parsed-text": "0.0.16",
+    "react-clone-referenced-element": "^1.0.1",
+    "react-native-scrollable-mixin": "^1.0.1",
     "shallowequal": "0.2.2",
     "uuid": "3.0.1"
   }
