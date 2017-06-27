@@ -45,6 +45,7 @@ class GiftedChat extends React.Component {
         this._isFirstLayout = true;
         this._locale = "en";
         this._messages = [];
+        this._isTyping = false;
 
         this.state = {
             isInitialized: false, // initialization will calculate maxHeight before rendering the chat
@@ -234,6 +235,7 @@ class GiftedChat extends React.Component {
     }
 
     onKeyboardWillShow(e) {
+        this._isTyping = true;
         this.setIsTypingDisabled(true);
         this.setKeyboardHeight(e.endCoordinates ? e.endCoordinates.height : e.end.height);
         this.setBottomOffset(this.props.bottomOffset);
@@ -251,6 +253,7 @@ class GiftedChat extends React.Component {
     }
 
     onKeyboardWillHide() {
+        this._isTyping = false;
         this.setIsTypingDisabled(true);
         this.setKeyboardHeight(0);
         this.setBottomOffset(0);
@@ -416,7 +419,8 @@ class GiftedChat extends React.Component {
             textInputProps: {
                 ...this.props.textInputProps,
                 ref: textInput => (this.textInput = textInput),
-                maxLength: this.getIsTypingDisabled() ? 0 : this.props.maxInputLength
+                maxLength: this.getIsTypingDisabled() ? 0 : this.props.maxInputLength,
+                autoFocus: this._isTyping
             }
         };
         if (this.getIsTypingDisabled()) {
